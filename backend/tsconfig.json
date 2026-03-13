@@ -1,0 +1,26 @@
+{
+  "compilerOptions": {
+    "target": "ES2020",
+    "module": "commonjs",
+    "strict": true,
+    "esModuleInterop": true,
+    "skipLibCheck": true,
+    "forceConsistentCasingInFileNames": true,
+    "outDir": "dist",
+    "rootDir": ".",
+    "baseUrl": ".",
+    "typeRoots": ["./node_modules/@types"],
+    "types": ["node"],
+    "paths": {
+      "@domain/*": ["packages/domain/src/*"],
+      "@application/*": ["packages/application/src/*"],
+      "@infrastructure/*": ["packages/infrastructure/src/*"],
+      "@shared/*": ["packages/shared/src/*"]
+    }
+  },
+  "include": [
+    "apps/**/*.ts",
+    "packages/**/*.ts",
+    "vitest.config.ts"
+  ]
+}
