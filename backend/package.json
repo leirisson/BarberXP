@@ -4,8 +4,8 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "tsx watch apps/api/src/main.ts",
-    "build": "tsup apps/api/src/main.ts --format cjs --out-dir build --sourcemap",
+    "dev": "node node_modules/tsx/dist/cli.cjs watch src/main.ts",
+    "build": "tsup src/main.ts --format cjs --out-dir build --sourcemap",
     "start": "node build/main.js",
     "test": "node node_modules/vitest/vitest.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",

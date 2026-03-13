@@ -9,6 +9,10 @@ Este documento define o **cronograma de desenvolvimento do backend** do projeto 
 * DDD (Domain Driven Design)
 * TDD (Test Driven Development)
 * Clean Code
+* SOLID
+* inversão de dependência
+* princípio da responsabidade unica
+* a estrutura de pastas deve ser o mais simples possivel
 
 Stack tecnológica:
 

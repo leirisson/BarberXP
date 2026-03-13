@@ -12,15 +12,14 @@
     "typeRoots": ["./node_modules/@types"],
     "types": ["node"],
     "paths": {
-      "@domain/*": ["packages/domain/src/*"],
-      "@application/*": ["packages/application/src/*"],
-      "@infrastructure/*": ["packages/infrastructure/src/*"],
-      "@shared/*": ["packages/shared/src/*"]
+      "@domain/*": ["src/domain/*"],
+      "@application/*": ["src/application/*"],
+      "@infrastructure/*": ["src/infrastructure/*"],
+      "@shared/*": ["src/shared/*"]
     }
   },
   "include": [
-    "apps/**/*.ts",
-    "packages/**/*.ts",
+    "src/**/*.ts",
     "vitest.config.ts",
     "types/**/*.d.ts"
   ]

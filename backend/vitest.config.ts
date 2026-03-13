@@ -9,10 +9,10 @@ export default defineConfig({
   },
   resolve: {
     alias: {
-      '@domain': resolve(rootDir, 'packages/domain/src'),
-      '@application': resolve(rootDir, 'packages/application/src'),
-      '@infrastructure': resolve(rootDir, 'packages/infrastructure/src'),
-      '@shared': resolve(rootDir, 'packages/shared/src')
+      '@domain': resolve(rootDir, 'src/domain'),
+      '@application': resolve(rootDir, 'src/application'),
+      '@infrastructure': resolve(rootDir, 'src/infrastructure'),
+      '@shared': resolve(rootDir, 'src/shared')
     }
   }
 });
