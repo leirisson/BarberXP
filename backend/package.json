@@ -4,9 +4,9 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "dev": "node node_modules/tsx/dist/cli.cjs watch apps/api/src/main.ts",
-    "build": "tsup apps/api/src/main.ts --format cjs --out-dir dist/apps/api --sourcemap",
-    "start": "node dist/apps/api/main.js",
+    "dev": "tsx watch apps/api/src/main.ts",
+    "build": "tsup apps/api/src/main.ts --format cjs --out-dir build --sourcemap",
+    "start": "node build/main.js",
     "test": "node node_modules/vitest/vitest.mjs",
     "typecheck": "tsc -p tsconfig.json --noEmit",
     "lint": "eslint \"**/*.ts\"",
