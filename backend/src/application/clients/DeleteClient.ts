@@ -9,7 +9,8 @@ export class DeleteClient {
     this.repo = repo;
   }
   async execute(input: { id: string }): Promise<void> {
-    throw new Error('Not implemented');
+    const found = await this.repo.findById(input.id);
+    if (!found) throw new Error('Cliente não encontrado');
+    await this.repo.delete(input.id);
   }
 }
-

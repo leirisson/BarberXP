@@ -1,439 +1,368 @@
-# spec.config.md
-
-# Cronograma de Desenvolvimento – Backend (BarberXP)
+# BarberXP – Plano de Especificação do Backend (v2)
 
 ## 1. Objetivo
 
-Este documento define o **cronograma de desenvolvimento do backend** do projeto **BarberXP**, seguindo os princípios de:
+Definir o plano de desenvolvimento do backend do BarberXP de forma pragmática, simples e orientada a TDD/DDD, alinhando estrutura, módulos, regras de negócio e critérios de aceite.
 
-* DDD (Domain Driven Design)
-* TDD (Test Driven Development)
-* Clean Code
-* SOLID
-* inversão de dependência
-* princípio da responsabidade unica
-* a estrutura de pastas deve ser o mais simples possivel
+Princípios:
+- DDD (Domain-Driven Design) em camadas claras (domain, application, infrastructure, shared)
+- TDD (unit + integração) com ciclo Red → Green → Refactor
+- Clean Code e SOLID (responsabilidade única e inversão de dependência)
+- Estrutura de pastas simples baseada em `src/`
 
-Stack tecnológica:
-
-* Node.js
-* TypeScript
-* Fastify
-* Prisma ORM
-* PostgreSQL
-
-O desenvolvimento será organizado em **etapas incrementais**, garantindo que cada módulo seja entregue com testes e regras de negócio bem definidas.
+Stack:
+- Node.js
+- TypeScript
+- Fastify
+- Prisma ORM
+- PostgreSQL
+- Vitest
 
 ---
 
-# 2. Metodologia de Desenvolvimento
+## 2. Estrutura do Projeto
 
-O projeto seguirá o ciclo de **TDD**:
+```
+src
+| application
+| └── clients
+| └── barbers
+| └── services
+| └── appointments
+| └── products
+| └── sales
+| └── points
+| └── rewards
+|
+| domain
+| └── clients
+| └── barbers
+| └── services
+| └── appointments
+| └── products
+| └── sales
+| └── points
+| └── rewards
+|
+| infrastructure
+| └── prismaClient.ts
+|
+| shared
+| └── env.ts
+|
+| server.ts
+| main.ts
+```
+
+Aliases TypeScript/Vitest:
+- `@domain/*` → `src/domain/*`
+- `@application/*` → `src/application/*`
+- `@infrastructure/*` → `src/infrastructure/*`
+- `@shared/*` → `src/shared/*`
+
+Testes:
+- Unitários no nível de domínio e casos de uso (Vitest)
+- Integração via HTTP (Fastify) e DB (Prisma) quando aplicável
+
+Critérios de Pronto (DoD) por feature:
+- Regras de negócio validadas (unit)
+- Fluxos principais testados por integração (HTTP)
+- Erros mapeados para HTTP (400/404/409)
+- Código com tipagem ok (typecheck) e scripts passando
+
+---
+
+## 3. Metodologia (TDD)
 
 ```
 Red → Green → Refactor
 ```
+- Red: escrever testes que falham (unit + integração).
+- Green: implementar o mínimo para passar.
+- Refactor: melhorar design, manter verde.
 
-### Red
-
-Escrever testes que falham.
-
-### Green
-
-Implementar o código mínimo necessário para passar nos testes.
-
-### Refactor
-
-Melhorar a estrutura do código mantendo os testes funcionando.
-
-Cada funcionalidade deve possuir:
-
-* testes unitários
-* testes de integração
+Cada módulo entrega:
+- testes unitários
+- testes de integração
+- endpoints definidos
 
 ---
 
-# 3. Estrutura Inicial do Backend
+## 4. Cronograma por Fase
 
-Primeira etapa do projeto:
+### Fase 1 – Setup do Projeto
+Objetivo: base do backend em `src/`.
+- TypeScript e aliases
+- Fastify (server + rota /health)
+- Prisma + PostgreSQL
+- Vitest
+- ESLint + Prettier
 
-```
-apps/api
-packages/domain
-packages/application
-packages/infrastructure
-packages/shared
-```
+Entrega:
+- Servidor dev e testes executando
+- Conexão com DB validada (best-effort)
 
-Configurações iniciais:
+### Fase 2 – Domínio de Clientes
+Objetivo: contexto de clientes.
 
-* Fastify server
-* Prisma ORM
-* PostgreSQL
-* ESLint
-* Prettier
-* vitest
-* tsup
-
----
-
-# 4. Cronograma de Desenvolvimento
-
-## Fase 1 – Setup do Projeto
-
-Objetivo: criar a base do projeto.
-
-Atividades:
-
-* use a pasta backend
-* configurar TypeScript
-* configurar Fastify
-* configurar Prisma ORM
-* configurar PostgreSQL
-* configurar ESLint e Prettier
-* configurar vitest
-* criar estrutura DDD
-
-Entrega esperada:
-
-* servidor rodando
-* conexão com banco funcionando
-* ambiente de testes configurado
-
-Tempo estimado:
-
-```
-2 dias
-```
-
----
-
-# Fase 2 – Domínio de Clientes
-
-Objetivo: implementar o contexto de clientes.
-
-Funcionalidades:
-
-* cadastro de cliente
-* atualização de cliente
-* listagem de clientes
-
-Entidades:
-
-```
-Client
-```
+Entidade:
+- Client (name, phone [único], address?, dateOfBirth?)
 
 UseCases:
+- CreateClient
+- GetClient
+- UpdateClient
+- ListClients
+- DeleteClient
 
-```
-CreateClient
-UpdateClient
-ListClients
-```
+Regras:
+- Nome obrigatório
+- Telefone somente dígitos (10–13) e único
+- dateOfBirth válida (não futura); address opcional
 
-Testes:
+Endpoints:
+- POST /clients
+- GET /clients
+- GET /clients/:id
+- PATCH /clients/:id
+- DELETE /clients/:id
 
-* validação de telefone único
-* validação de dados obrigatórios
+Testes chave:
+- Telefone único
+- Validação de obrigatórios e formatos
 
-Tempo estimado:
-
-```
-3 dias
-```
-
----
-
-# Fase 3 – Domínio de Barbeiros
-
+### Fase 3 – Domínio de Barbeiros
 Objetivo: gerenciar barbeiros.
 
-Funcionalidades:
-
-* cadastro de barbeiros
-* listagem de barbeiros
-
-Entidades:
-
-```
-Barber
-```
+Entidade:
+- Barber (name, phone?, email?, status[active|inactive])
 
 UseCases:
+- CreateBarber
+- GetBarber
+- UpdateBarber
+- ListBarbers
+- DeleteBarber
 
-```
-CreateBarber
-ListBarbers
-```
+Regras:
+- Nome obrigatório; status enum
+- Telefone/email válidos (se fornecidos)
 
-Tempo estimado:
+Endpoints:
+- POST /barbers
+- GET /barbers
+- GET /barbers/:id
+- PATCH /barbers/:id
+- DELETE /barbers/:id
 
-```
-2 dias
-```
+Testes chave:
+- Criação válida
+- Atualização de status
 
----
+### Fase 4 – Serviços
+Objetivo: catálogo de serviços.
 
-# Fase 4 – Sistema de Serviços
-
-Objetivo: definir os serviços oferecidos.
-
-Funcionalidades:
-
-* cadastro de serviços
-* listagem de serviços
-
-Tipos de serviço:
-
-```
-Corte
-Barba
-Combo
-Combo Master
-```
-
-Entidades:
-
-```
-Service
-```
-
-Tempo estimado:
-
-```
-2 dias
-```
-
----
-
-# Fase 5 – Sistema de Agendamento
-
-Objetivo: permitir reservas de horários.
-
-Funcionalidades:
-
-* criar reserva
-* cancelar reserva
-* listar reservas
-
-Regras de negócio:
-
-* não permitir dois agendamentos no mesmo horário com o mesmo barbeiro
-
-Entidades:
-
-```
-Appointment
-```
+Entidade:
+- Service (name[único], type[enum: Corte|Barba|Combo|Combo Master], price>0, duration>0)
 
 UseCases:
+- CreateService
+- GetService
+- UpdateService
+- ListServices
+- DeleteService
 
-```
-CreateAppointment
-CancelAppointment
-ListAppointments
-```
+Endpoints:
+- POST /services
+- GET /services
+- GET /services/:id
+- PATCH /services/:id
+- DELETE /services/:id
 
-Testes importantes:
+Testes chave:
+- Preço/duração válidos
+- Nome único
 
-* conflito de agenda
-* criação de reserva válida
+### Fase 5 – Agendamentos
+Objetivo: reservas de horários.
 
-Tempo estimado:
-
-```
-4 dias
-```
-
----
-
-# Fase 6 – Sistema de Produtos
-
-Objetivo: gerenciar produtos da barbearia.
-
-Funcionalidades:
-
-* cadastro de produtos
-* atualização de estoque
-* listagem de produtos
-
-Entidades:
-
-```
-Product
-```
+Entidade:
+- Appointment (barberId, clientId, serviceId, startTime, duration, status[scheduled|canceled|completed])
 
 UseCases:
+- CreateAppointment
+- CancelAppointment
+- ListAppointments
+- GetAppointment
 
-```
-CreateProduct
-UpdateProductStock
-ListProducts
-```
+Regras:
+- Sem conflito de horário para o mesmo barbeiro
+- Horário futuro
+- barberId/clientId/serviceId existentes
 
-Tempo estimado:
+Endpoints:
+- POST /appointments
+- GET /appointments
+- GET /appointments/:id
+- PATCH /appointments/:id/cancel
 
-```
-3 dias
-```
+Testes chave:
+- Conflito de agenda (não permitir)
+- Criação válida
 
----
+### Fase 6 – Produtos
+Objetivo: catálogo com estoque.
 
-# Fase 7 – Vendas de Produtos
+Entidade:
+- Product (name[único], price>0, stock>=0)
 
+UseCases:
+- CreateProduct
+- UpdateProductStock
+- ListProducts
+- GetProduct
+
+Endpoints:
+- POST /products
+- GET /products
+- GET /products/:id
+- PATCH /products/:id/stock
+
+Testes chave:
+- Estoque não negativo
+- Nome único
+
+### Fase 7 – Vendas
 Objetivo: registrar vendas de produtos.
 
-Funcionalidades:
-
-* registrar venda
-* atualizar estoque automaticamente
-
 Entidades:
-
-```
-Sale
-```
+- Sale (clientId?, total)
+- SaleItem (saleId, productId, quantity, unitPrice)
 
 UseCases:
-
-```
-RegisterProductSale
-```
-
-Testes:
-
-* impedir venda com estoque insuficiente
-
-Tempo estimado:
-
-```
-3 dias
-```
-
----
-
-# Fase 8 – Produto no Combo Master
-
-Objetivo: permitir adicionar produto ao atendimento.
-
-Funcionalidades:
-
-* adicionar produto ao serviço "Combo Master"
+- RegisterProductSale
+- ListSales
+- GetSale
 
 Regras:
+- Estoque suficiente por item
+- Atualiza estoque ao registrar venda
 
-* somente Combo Master pode adicionar produto
-* produto precisa ter estoque
+Endpoints:
+- POST /sales
+- GET /sales
+- GET /sales/:id
+
+Testes chave:
+- Impedir venda com estoque insuficiente
+- Cálculo do total
+
+### Fase 8 – Produto no Combo Master
+Objetivo: associar produto a atendimento de tipo Combo Master.
 
 UseCases:
-
-```
-AddProductToAppointment
-```
-
-Tempo estimado:
-
-```
-2 dias
-```
-
----
-
-# Fase 9 – Sistema de Pontos
-
-Objetivo: implementar fidelização.
-
-Funcionalidades:
-
-* adicionar pontos após atendimento
-* consultar saldo de pontos
+- AddProductToAppointment
 
 Regras:
+- Apenas serviços do tipo Combo Master
+- Produto com estoque
 
-```
-Corte → 100 pontos
-Barba → 80 pontos
-Combo → 180 pontos
-```
+Endpoints:
+- POST /appointments/:id/products
 
-Entidades:
+Testes chave:
+- Rejeitar serviços não-Combo-Master
+- Estoque suficiente
 
-```
-Points
-```
-
-UseCases:
-
-```
-AddClientPoints
-GetClientPoints
-```
-
-Tempo estimado:
-
-```
-3 dias
-```
-
----
-
-# Fase 10 – Sistema de Recompensas
-
-Objetivo: permitir troca de pontos.
-
-Funcionalidades:
-
-* cadastrar recompensas
-* trocar pontos por recompensa
+### Fase 9 – Pontos (Fidelização)
+Objetivo: conceder e consultar pontos.
 
 Entidades:
-
-```
-Reward
-```
+- PointsLedger (clientId, delta, source[appointmentId], createdAt)
 
 UseCases:
+- AddClientPoints
+- GetClientPoints
 
-```
-CreateReward
-RedeemReward
-```
+Regras:
+- Tabela: Corte 100, Barba 80, Combo 180
+- Apenas após atendimento concluído
 
-Testes:
+Endpoints:
+- POST /clients/:id/points/earn
+- GET /clients/:id/points
 
-* impedir troca sem pontos suficientes
+Testes chave:
+- Cálculo por serviço
+- Acúmulo e saldo
 
-Tempo estimado:
+### Fase 10 – Recompensas
+Objetivo: catálogo e resgates por pontos.
 
-```
-3 dias
-```
+Entidade:
+- Reward (name, cost>0)
+- Redemption (clientId, rewardId, cost, createdAt)
+
+UseCases:
+- CreateReward
+- ListRewards
+- RedeemReward
+
+Regras:
+- Cliente com saldo suficiente
+- Registrar histórico de resgates
+
+Endpoints:
+- POST /rewards
+- GET /rewards
+- POST /clients/:id/rewards/:rewardId/redeem
+
+Testes chave:
+- Impedir resgate sem pontos
+- Registrar resgate
 
 ---
 
-# 5. Estimativa Total
+## 5. Regras Transversais
 
-Tempo estimado para MVP backend:
+Erros e HTTP:
+- 400: validação de entrada
+- 404: recurso não encontrado
+- 409: conflito (ex.: telefone duplicado, agenda)
 
-```
-27 dias de desenvolvimento
-```
+Paginação:
+- Listagens com `page` e `limit` (padrão configurável)
+
+Observabilidade:
+- Logger (pino) no Fastify
+- Logs de requisição e erros
+
+DTOs e Mapeamento:
+- Camada HTTP isolada do domínio; mapeadores de DTO ↔ entidade
+
+Transações:
+- Operações de estoque, vendas e resgates atômicas (transações Prisma)
+
+Autenticação (básica):
+- POST /auth/login, POST /auth/refresh, GET /auth/me
+- Proteção de rotas por papel (Admin/Atendente)
 
 ---
 
-# 6. Entregáveis do Backend
+## 6. Entregáveis e Qualidade
 
-Ao final do cronograma, o backend deve possuir:
+Cada fase conclui com:
+- Testes unitários e de integração passando
+- Typecheck sem erros
+- Endpoints documentados e funcionando
+- Regras de negócio cobertas
 
-* API REST completa
-* autenticação básica
-* sistema de agendamentos
-* gestão de clientes
-* gestão de produtos
-* sistema de fidelização
-* testes automatizados
-* arquitetura DDD organizada
-
----
+MVP do backend ao final:
+- API REST completa
+- Gestão de clientes, barbeiros, serviços, agendamentos
+- Produtos e vendas com estoque
+- Pontos e recompensas
+- Autenticação básica
+- Testes automatizados
+- Arquitetura simples em `src/`
 

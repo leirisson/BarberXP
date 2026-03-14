@@ -10,7 +10,14 @@ export class ListClients {
     this.repo = repo;
   }
   async execute(): Promise<Client[]> {
-    throw new Error('Not implemented');
+    const rows = await this.repo.list();
+    return rows.map((r) =>
+      Client.create({
+        name: r.name,
+        phone: r.phone,
+        address: r.address,
+        dateOfBirth: r.dateOfBirth,
+      })
+    );
   }
 }
-
